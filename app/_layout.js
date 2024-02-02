@@ -1,8 +1,5 @@
 import { Slot, useRouter, useSegments } from "expo-router";
-
-// Import your global CSS file
 import "../global.css";
-import { View } from "react-native";
 import { useEffect } from "react";
 import { AuthContextProvider, useAuth } from "../context/authContext";
 
@@ -12,25 +9,31 @@ const MainLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof isAuthenticated == "undefined") return;
+    // Check if isAuthenticated is still undefined and return early
+    if (typeof isAuthenticated === "undefined") return;
 
-    const inApp = segments[0] == "(app)";
+    const inApp = segments[0] === "(app)";
 
     console.log("inApp", inApp);
+
+    // Use strict equality check (===) for consistency
     if (isAuthenticated && !inApp) {
       router.replace("home");
-    } else if (isAuthenticated == false) {
+    } else if (!isAuthenticated) {
+      // Use explicit check for false
       router.replace("signIn");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, segments, router]);
 
   return <Slot />;
 };
 
-export default function RootLayout() {
+const RootLayout = () => {
   return (
     <AuthContextProvider>
-      <Slot />
+      <MainLayout />
     </AuthContextProvider>
   );
-}
+};
+
+export default RootLayout;
