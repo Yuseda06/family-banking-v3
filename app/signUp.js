@@ -17,9 +17,11 @@ import {
 } from "react-native-responsive-screen";
 import Loading from "../components/loading";
 import CustomKeyboard from "../components/customKeyboard";
+import { useAuth } from "../context/authContext";
 
 export default function SignUp() {
   const router = useRouter();
+  const { register } = useAuth();
   const [loading, setLoading] = useState(false);
   const emailRef = useRef("");
   const passwordRef = useRef("");
@@ -34,6 +36,23 @@ export default function SignUp() {
       !profileRef.current
     ) {
       Alert.alert("Oops!!!", "Please fill in all the fields");
+      return;
+    }
+
+    setLoading(true);
+
+    let response = await register(
+      emailRef.current,
+      passwordRef.current,
+      usernameRef.current,
+      profileRef.current
+    );
+
+    setLoading(false);
+
+    console.log("got result", response);
+    if (!response.success) {
+      Alert.alert("Oops!!!", response.msg);
       return;
     }
   };
