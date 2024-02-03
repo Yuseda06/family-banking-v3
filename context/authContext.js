@@ -2,7 +2,7 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { createContext, useContext, useEffect, useState } from "react";
 import { addDoc, doc, setDoc } from "firebase/firestore";
 
@@ -55,6 +55,8 @@ export const AuthContextProvider = ({ children }) => {
       let msg = e.message;
 
       if (msg.includes("(auth/invalid-email)")) msg = "Invalid email";
+      if (msg.includes("(auth/weak-password)"))
+        msg = "Password should be at least 6 characters long";
       return { success: false, msg };
     }
   };
