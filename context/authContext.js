@@ -1,5 +1,7 @@
 import {
   onAuthStateChanged,
+  signOut,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
@@ -26,17 +28,53 @@ export const AuthContextProvider = ({ children }) => {
     return unsub;
   }, []);
 
+  const updateUserData = async (userID) => {
+    const docRef = doc(db, "users", userID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      let data = docSnap.data();
+      setUser({
+        ...user,
+        username: data.username,
+        profileUrl: data.profileUrl,
+        userId: data.userId,
+      });
+    }
+  };
+
   const login = async (email, password) => {
     try {
-    } catch (e) {}
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      return { success: true, user: response?.user };
+    } catch (e) {
+      let msg = e.message;
+
+      if (msg.includes("(auth/invalid-email)")) msg = "Invalid email";
+      if (msg.includes("(auth/user-not-found)")) msg = "User not found";
+      if (msg.includes("(auth/wrong-password)")) msg = "Wrong password";
+      if (msg.includes("(auth/invalid-credential)"))
+        msg = "Invalid credentials";
+      return { success: false, msg };
+    }
   };
 
   const logout = async () => {
     try {
-    } catch (e) {}
+      await signOut(auth);
+      return { success: true };
+    } catch (e) {
+      return { success: false, msg: e.message, error: e };
+    }
   };
 
-  const register = async (email, password, username, profileUrl) => {
+  const register = async (
+    email,
+    password,
+    username,
+    profileUrl = null,
+    staffId
+  ) => {
     try {
       const response = await createUserWithEmailAndPassword(
         auth,
@@ -48,6 +86,7 @@ export const AuthContextProvider = ({ children }) => {
         username,
         profileUrl,
         userId: response?.user?.uid,
+        staffId,
       });
 
       return { success: true, user: response?.user };
@@ -57,6 +96,8 @@ export const AuthContextProvider = ({ children }) => {
       if (msg.includes("(auth/invalid-email)")) msg = "Invalid email";
       if (msg.includes("(auth/weak-password)"))
         msg = "Password should be at least 6 characters long";
+      if (msg.includes("(auth/email-already-in-use)"))
+        msg = "This email is already in use. Please try another one.";
       return { success: false, msg };
     }
   };
