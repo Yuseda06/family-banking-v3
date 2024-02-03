@@ -14,8 +14,6 @@ const MainLayout = () => {
 
     const inApp = segments[0] === "(app)";
 
-    console.log("inApp", inApp);
-
     // Use strict equality check (===) for consistency
     if (isAuthenticated && !inApp) {
       router.replace("home");
@@ -23,7 +21,7 @@ const MainLayout = () => {
       // Use explicit check for false
       router.replace("signIn");
     }
-  }, [isAuthenticated, segments, router]);
+  }, [isAuthenticated]);
 
   return <Slot />;
 };
