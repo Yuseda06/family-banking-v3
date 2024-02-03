@@ -1,7 +1,7 @@
 import { Octicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   Alert,
   Image,
@@ -15,10 +15,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import Loading from "../components/loading";
 
 export default function SignIn() {
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
   const emailRef = useRef("");
   const passwordRef = useRef("");
 
@@ -90,18 +91,26 @@ export default function SignIn() {
               </Text>
             </View>
 
-            <TouchableOpacity
-              onPress={handleLogin}
-              style={{ height: hp(6.5) }}
-              className="bg-teal-700 rounded-xl justify-center items-center mt-10"
-            >
-              <Text
-                style={{ fontSize: hp(2.7) }}
-                className="text-white font-bold "
-              >
-                Sign In
-              </Text>
-            </TouchableOpacity>
+            <View>
+              {loading ? (
+                <View className="flex-row justify-center items-center">
+                  <Loading size={hp(12)} />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  onPress={handleLogin}
+                  style={{ height: hp(6.5) }}
+                  className="bg-teal-700 rounded-xl justify-center items-center mt-10"
+                >
+                  <Text
+                    style={{ fontSize: hp(2.7) }}
+                    className="text-white font-bold "
+                  >
+                    Sign In
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
 
             <View className="flex-row justify-center">
               <Text
