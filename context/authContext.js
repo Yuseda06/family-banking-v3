@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
 import { createContext, useContext, useEffect, useState } from "react";
-import { addDoc, doc, setDoc } from "firebase/firestore";
+import { addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 
 export const AuthContext = createContext();
 
@@ -19,6 +19,7 @@ export const AuthContextProvider = ({ children }) => {
       if (user) {
         setIsAuthenticated(true);
         setUser(user);
+        updateUserData(user.uid);
       } else {
         setIsAuthenticated(false);
         setUser(null);
@@ -28,18 +29,19 @@ export const AuthContextProvider = ({ children }) => {
     return unsub;
   }, []);
 
-  const updateUserData = async (userID) => {
-    const docRef = doc(db, "users", userID);
+  const updateUserData = async (userId) => {
+    console.log("userId", userId);
+    const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       let data = docSnap.data();
-      setUser({
-        ...user,
+      setUser((prevUser) => ({
+        ...prevUser,
         username: data.username,
         profileUrl: data.profileUrl,
         userId: data.userId,
-      });
+      }));
     }
   };
 
@@ -81,7 +83,6 @@ export const AuthContextProvider = ({ children }) => {
         email,
         password
       );
-      console.log("response.user", response?.user);
       await setDoc(doc(db, "users", response?.user?.uid), {
         username,
         profileUrl,
