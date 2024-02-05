@@ -75,8 +75,6 @@ export default function HomeHeader() {
                   height: hp(4.3),
                   aspectRatio: 1,
                   borderRadius: 100,
-                  marginTop: 18,
-                  marginBottom: 10,
                 }}
                 source={user?.profileUrl}
                 placeholder={blurhash}
