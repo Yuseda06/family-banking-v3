@@ -57,11 +57,14 @@ export default function HomeHeader() {
           paddingTop: ios ? top : top + 10,
           borderBottomLeftRadius: 30,
           borderBottomRightRadius: 30,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: 20,
+
           // Add any other styles you need here
         }}
-        className="flex-row justify-between px-5  pb-6  "
       >
-        <View className="pt-2 flex-row gap-4 justify-center items-center">
+        <View className=" flex-row gap-4 justify-center items-center">
           <Pressable>
             <Feather name="menu" size={hp(3)} color="white" />
           </Pressable>
@@ -87,8 +90,8 @@ export default function HomeHeader() {
                   borderRadius: 10,
                   borderCurve: "continuous",
                   backgroundColor: "white",
-                  marginTop: 60,
-                  marginLeft: -40,
+                  marginTop: 30,
+                  marginLeft: -30,
                   width: 160,
                   shadowOpacity: 0.35,
                   shadowOffset: { width: 0, height: 0 },
