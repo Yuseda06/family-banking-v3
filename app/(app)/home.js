@@ -1,4 +1,10 @@
-import { View, Text, Button, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/authContext";
 import Carousel from "react-native-reanimated-carousel";
@@ -17,6 +23,8 @@ import { getDocs, query, where } from "firebase/firestore";
 export default function Home() {
   const { logout, user } = useAuth();
   const [users, setUsers] = useState([]);
+
+  console.log("users at home", users);
 
   useEffect(() => {
     if (user?.uid) getUsers();
@@ -39,7 +47,10 @@ export default function Home() {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      className="flex-1 bg-white"
+    >
       <StatusBar style="light" />
 
       <Chart />
@@ -51,6 +62,6 @@ export default function Home() {
           <Loading size={hp(25)} />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 }
