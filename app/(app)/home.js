@@ -53,7 +53,7 @@ export default function Home() {
       {/* <Chart /> */}
 
       {users?.length > 0 ? (
-        <ChatList users={users} />
+        <ChatList currentUser={user} users={users} />
       ) : (
         <View className="flex items-center" style={{ top: hp(30) }}>
           <Loading size={hp(25)} />
