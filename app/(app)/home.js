@@ -47,13 +47,10 @@ export default function Home() {
   };
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      className="flex-1 bg-white"
-    >
+    <View className="flex-1 bg-white">
       <StatusBar style="light" />
 
-      <Chart />
+      {/* <Chart /> */}
 
       {users?.length > 0 ? (
         <ChatList users={users} />
@@ -62,6 +59,6 @@ export default function Home() {
           <Loading size={hp(25)} />
         </View>
       )}
-    </ScrollView>
+    </View>
   );
 }

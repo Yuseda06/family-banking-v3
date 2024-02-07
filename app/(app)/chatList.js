@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 export default function ChatList({ users }) {
   const router = useRouter();
 
-  console.log("user in chatlist", users);
   return (
     <View className="flex-1">
       <FlatList

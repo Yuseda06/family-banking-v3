@@ -1,13 +1,16 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Image } from "expo-image";
 import { blurhash } from "../utils/common";
+import { getDocs, query, where } from "firebase/firestore";
 
 export default function ChatItem({ item, noBorder, router }) {
+  const [userData, setUserData] = useState([]);
+
   const openChatRoom = () => {
     router.push({ pathname: "/chatRoom", params: item });
   };

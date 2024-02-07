@@ -18,6 +18,7 @@ import {
 import Loading from "../components/loading";
 import CustomKeyboard from "../components/customKeyboard";
 import { useAuth } from "../context/authContext";
+import Constants from "expo-constants";
 
 export default function SignIn() {
   const router = useRouter();
@@ -141,6 +142,13 @@ export default function SignIn() {
                 </Text>
               </Pressable>
             </View>
+            <Text
+              className="text-center text-neutral-500 font-semibold mt-[90px]"
+              style={{ fontSize: hp(1.24) }}
+            >
+              Build Number : {Constants.expoConfig.android.versionCode} Version
+              : {Constants.expoConfig.version}{" "}
+            </Text>
           </View>
         </View>
       </View>
