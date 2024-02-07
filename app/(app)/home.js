@@ -24,8 +24,6 @@ export default function Home() {
   const { logout, user } = useAuth();
   const [users, setUsers] = useState([]);
 
-  console.log("users at home", users);
-
   useEffect(() => {
     if (user?.uid) getUsers();
   }, []);

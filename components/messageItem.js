@@ -6,6 +6,8 @@ import {
 } from "react-native-responsive-screen";
 
 export default function MessageItem({ message, currentUser }) {
+  console.log("currentUser?.userId", currentUser);
+  console.log("message?.userId", message?.userId);
   if (currentUser?.userId === message?.userId) {
     return (
       <View className="flex-row justify-end mb-3 mr-3">
