@@ -18,6 +18,7 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 import { MenuItem } from "./customMenuItems";
 import { LinearGradient } from "expo-linear-gradient";
 import GreetingText from "./greeting";
+import { router } from "expo-router";
 
 const ios = Platform.OS === "ios";
 
@@ -26,7 +27,7 @@ export default function HomeHeader() {
   const { top } = useSafeAreaInsets();
 
   const handleProfile = () => {
-    console.log("profile");
+    router.push("/profile");
   };
 
   const handleLogout = async () => {

@@ -70,13 +70,7 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
-  const register = async (
-    email,
-    password,
-    username,
-    profileUrl = null,
-    staffId
-  ) => {
+  const register = async (email, password, username, profileUrl, staffId) => {
     try {
       const response = await createUserWithEmailAndPassword(
         auth,

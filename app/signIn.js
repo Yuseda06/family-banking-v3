@@ -10,6 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Span,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -45,39 +46,44 @@ export default function SignIn() {
     <CustomKeyboard>
       <View className="flex-1">
         <StatusBar style="dark" />
-        <View className="items-center bg-[#fffaf6] pt-20">
+
+        <View
+          className="items-center justify-center bg-[#fffaf6] py-10
+          rounded-bl-[50px] rounded-br-[50px] "
+        >
           <Image
             style={{ height: hp(20) }}
             resizeMode="contain"
             source={require("../assets/images/login.gif")}
           />
         </View>
+
         <Text
           style={{ fontSize: hp(3) }}
-          className="font-bold  text-center text-neutral-800 mt-10"
+          className="font-bold  text-center text-neutral-800 mt-6"
         >
-          Sign In
+          Welcome Back
         </Text>
         <View
           style={{ paddingTop: hp(8), paddingHorizontal: wp(5) }}
           className="flex-1 gap-12 -mt-10"
         >
-          <View className="gap-4">
+          <View className="gap-4 ">
             <View
               style={{ height: hp(7) }}
-              className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
+              className="flex-row gap-4 px-4 bg-neutral-100 items-center  rounded-xl"
             >
               <Octicons name="mail" size={hp(2.4)} color="gray" />
               <TextInput
                 onChangeText={(value) => (emailRef.current = value)}
-                style={{ fontSize: hp(2) }}
-                className="flex-1 font-semibold text-neutral-700"
+                style={{ fontSize: hp(2), height: hp(8) }}
+                className="flex-1 font-semibold text-neutral-700 "
                 placeholder="Email address"
-                placeholderTextColor={"gray"}
+                placeholderTextColor={"#555555"}
               />
             </View>
 
-            <View className="gap-3">
+            <View className="gap-0">
               <View
                 style={{ height: hp(7) }}
                 className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
@@ -85,19 +91,23 @@ export default function SignIn() {
                 <Octicons name="lock" size={hp(2.4)} color="gray" />
                 <TextInput
                   onChangeText={(value) => (passwordRef.current = value)}
-                  style={{ fontSize: hp(2) }}
+                  style={{ fontSize: hp(2), height: hp(8) }}
                   className="flex-1 font-semibold text-neutral-700"
                   secureTextEntry={true}
                   placeholder="Password"
-                  placeholderTextColor={"gray"}
+                  placeholderTextColor={"#555555"}
                 />
               </View>
-              <Text
-                style={{ fontSize: hp(1.8) }}
-                className="font-semibold text-right text-teal-700"
-              >
-                Forgot password?
-              </Text>
+              <View className="flex-row justify-end items-center">
+                <TouchableOpacity className="h-12  justify-center items-end pl-4">
+                  <Text
+                    style={{ fontSize: hp(1.8) }}
+                    className="font-semibold text-right text-teal-700 "
+                  >
+                    Forgot password?
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View>
@@ -108,7 +118,7 @@ export default function SignIn() {
               ) : (
                 <TouchableOpacity
                   onPress={handleLogin}
-                  style={{ height: hp(6.5) }}
+                  style={{ height: hp(7.5) }}
                   className="bg-teal-700 rounded-xl justify-center items-center mt-6"
                 >
                   <Text
@@ -121,7 +131,7 @@ export default function SignIn() {
               )}
             </View>
 
-            <View className="flex-row justify-center">
+            <View className="flex-row justify-center items-center">
               <Text
                 style={{ fontSize: hp(1.8) }}
                 className="font-semibold text-neutral-500"
@@ -129,10 +139,11 @@ export default function SignIn() {
                 Don't have an account yet?{" "}
               </Text>
 
-              <Pressable
+              <TouchableOpacity
                 onPress={() => {
                   router.push("signUp");
                 }}
+                className="h-14  gap-3 items-center justify-center pr-4"
               >
                 <Text
                   style={{ fontSize: hp(1.8) }}
@@ -140,7 +151,7 @@ export default function SignIn() {
                 >
                   Sign Up
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
             <Text
               className="text-center text-neutral-500 font-semibold mt-[90px]"

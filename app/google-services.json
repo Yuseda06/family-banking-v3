@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "595549353243",
+    "project_id": "familybankingbykmy",
+    "storage_bucket": "familybankingbykmy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595549353243:android:b85a0e41457d9dec70cfbe",
+        "android_client_info": {
+          "package_name": "com.yuseda06.familybankingv3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVb6t0uPX8cHuJe4BiN-AL-ZDlntfUsVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

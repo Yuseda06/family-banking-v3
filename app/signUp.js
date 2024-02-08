@@ -27,7 +27,7 @@ export default function SignUp() {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const usernameRef = useRef("");
-  const profileRef = useRef("");
+  const profileRef = "nil";
   const staffIdRef = useRef("");
 
   const handleRegister = async () => {
@@ -35,7 +35,6 @@ export default function SignUp() {
       !emailRef.current ||
       !passwordRef.current ||
       !usernameRef.current ||
-      !profileRef.current ||
       !staffIdRef.current
     ) {
       Alert.alert("reg!!!", "Please fill in all the fields");
@@ -48,7 +47,7 @@ export default function SignUp() {
       emailRef.current,
       passwordRef.current,
       usernameRef.current,
-      profileRef.current,
+      profileRef,
       staffIdRef.current
     );
 
@@ -65,7 +64,10 @@ export default function SignUp() {
       <ScrollView>
         <View className="flex-1">
           <StatusBar style="dark" />
-          <View className="items-center bg-[#fffaf6] pt-20">
+          <View
+            className="items-center justify-center bg-[#fffaf6] py-10
+          rounded-bl-[50px] rounded-br-[50px] "
+          >
             <Image
               style={{ height: hp(20) }}
               resizeMode="contain"
@@ -73,15 +75,15 @@ export default function SignUp() {
             />
           </View>
           <View
-            style={{ paddingTop: hp(8), paddingHorizontal: wp(5) }}
+            style={{ paddingTop: hp(7), paddingHorizontal: wp(5) }}
             className="flex-1 gap-12 -mt-20"
           >
             <View className="gap-4">
               <Text
                 style={{ fontSize: hp(3) }}
-                className="font-bold  text-center text-neutral-800 mt-9 mb-7"
+                className="font-bold  text-center text-neutral-800 mt-10 mb-4"
               >
-                Sign Up{" "}
+                Create an account
               </Text>
 
               <View className="gap-4">
@@ -92,10 +94,10 @@ export default function SignUp() {
                   <Feather name="user" size={hp(2.4)} color="gray" />
                   <TextInput
                     onChangeText={(value) => (usernameRef.current = value)}
-                    style={{ fontSize: hp(2) }}
-                    className="flex-1 font-semibold text-neutral-700"
+                    style={{ fontSize: hp(2), height: hp(8) }}
+                    className="flex-1 font-semibold text-neutral-700 "
                     placeholder="Username"
-                    placeholderTextColor={"gray"}
+                    placeholderTextColor={"#555555"}
                   />
                 </View>
 
@@ -106,10 +108,10 @@ export default function SignUp() {
                   <Octicons name="mail" size={hp(2.4)} color="gray" />
                   <TextInput
                     onChangeText={(value) => (emailRef.current = value)}
-                    style={{ fontSize: hp(2) }}
+                    style={{ fontSize: hp(2), height: hp(8) }}
                     className="flex-1 font-semibold text-neutral-700"
                     placeholder="Email address"
-                    placeholderTextColor={"gray"}
+                    placeholderTextColor={"#555555"}
                   />
                 </View>
 
@@ -121,16 +123,16 @@ export default function SignUp() {
                     <Octicons name="lock" size={hp(2.4)} color="gray" />
                     <TextInput
                       onChangeText={(value) => (passwordRef.current = value)}
-                      style={{ fontSize: hp(2) }}
+                      style={{ fontSize: hp(2), height: hp(8) }}
                       className="flex-1 font-semibold text-neutral-700"
                       secureTextEntry={true}
                       placeholder="Password"
-                      placeholderTextColor={"gray"}
+                      placeholderTextColor={"#555555"}
                     />
                   </View>
                 </View>
 
-                <View
+                {/* <View
                   style={{ height: hp(7) }}
                   className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
                 >
@@ -142,7 +144,7 @@ export default function SignUp() {
                     placeholder="Profile Url"
                     placeholderTextColor={"gray"}
                   />
-                </View>
+                </View> */}
 
                 <View
                   style={{ height: hp(7) }}
@@ -151,10 +153,10 @@ export default function SignUp() {
                   <FontAwesome name="id-card-o" size={hp(2.4)} color="gray" />
                   <TextInput
                     onChangeText={(value) => (staffIdRef.current = value)}
-                    style={{ fontSize: hp(2) }}
+                    style={{ fontSize: hp(2), height: hp(8) }}
                     className="flex-1 font-semibold text-neutral-700"
                     placeholder="Staff ID"
-                    placeholderTextColor={"gray"}
+                    placeholderTextColor={"#555555"}
                   />
                 </View>
 
@@ -179,7 +181,7 @@ export default function SignUp() {
                   )}
                 </View>
 
-                <View className="flex-row justify-center">
+                <View className="flex-row justify-center items-center">
                   <Text
                     style={{ fontSize: hp(1.8) }}
                     className="font-semibold text-neutral-500"
@@ -187,10 +189,11 @@ export default function SignUp() {
                     Already have an account?{" "}
                   </Text>
 
-                  <Pressable
+                  <TouchableOpacity
                     onPress={() => {
                       router.push("signIn");
                     }}
+                    className="h-14  gap-3 items-center justify-center pr-4"
                   >
                     <Text
                       style={{ fontSize: hp(1.8) }}
@@ -198,7 +201,7 @@ export default function SignUp() {
                     >
                       Sign In
                     </Text>
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
