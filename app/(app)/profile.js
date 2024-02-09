@@ -58,15 +58,21 @@ export default function profile() {
         Edit your profile details here
       </Text>
 
-      <View className="flex-1  items-center border  border-red-400 relative">
-        <View className=" rounded-full items-center justify-center">
+      <View className="flex-1  items-center justify-start relative ">
+        <View
+          style={{
+            borderRadius: 900,
+            alignItems: "center",
+          }}
+        >
           <Image
-            style={{ marginTop: hp(30) }}
-            source={{ uri: profileImage }}
             style={{
               height: hp(30),
               width: hp(30),
+              borderRadius: 900, // Set the border radius here
+              // This margin is not needed for centering
             }}
+            source={{ uri: profileImage }}
             placeholder={blurhash}
             transition={500}
           />
@@ -79,7 +85,7 @@ export default function profile() {
           <Feather name="camera" size={hp(3)} color="#737373" />
         </TouchableOpacity>
 
-        <View className="flex-1 gap-4 w-full px-4">
+        <View className="flex-1 gap-4 w-full px-4 mt-10">
           <View
             style={{ height: hp(7) }}
             className="flex-row gap-4 px-4 bg-neutral-100 mt-30 items-center rounded-xl"
