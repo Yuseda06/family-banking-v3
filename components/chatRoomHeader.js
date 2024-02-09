@@ -8,8 +8,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useProfileStore } from "../zustand/userProfileStore";
 
 export default function ChatRoomHeader({ user, router }) {
+  const { userProfile } = useProfileStore();
+  console.log("userprofile in chatroomheader", userProfile);
   return (
     <Stack.Screen
       options={{
@@ -22,7 +25,7 @@ export default function ChatRoomHeader({ user, router }) {
               style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
             >
               <Image
-                source={user.profileUrl} // Assuming it's a PNG image, adjust accordingly
+                source={user?.profileUrl} // Assuming it's a PNG image, adjust accordingly
                 style={{ aspectRatio: 1, borderRadius: 100, height: hp(3.5) }}
               />
 

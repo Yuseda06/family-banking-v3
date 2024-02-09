@@ -19,12 +19,23 @@ import { MenuItem } from "./customMenuItems";
 import { LinearGradient } from "expo-linear-gradient";
 import GreetingText from "./greeting";
 import { router } from "expo-router";
+import {
+  useProfileStore,
+  usePictureTakenStore,
+  usePictureGrabbedStore,
+} from "../zustand/userProfileStore";
 
 const ios = Platform.OS === "ios";
 
 export default function HomeHeader() {
   const { user, logout } = useAuth();
   const { top } = useSafeAreaInsets();
+  const { userProfile, updateProfile } = useProfileStore();
+  const { pictureTaken, updatePictureTaken } = usePictureTakenStore();
+
+  const profileImageSource = pictureTaken.isTaken
+    ? { uri: userProfile?.profileUrl }
+    : { uri: user?.profileUrl };
 
   const handleProfile = () => {
     router.push("/profile");
@@ -80,7 +91,7 @@ export default function HomeHeader() {
                   aspectRatio: 1,
                   borderRadius: 100,
                 }}
-                source={user?.profileUrl}
+                source={profileImageSource}
                 placeholder={blurhash}
                 transition={1000}
               />
@@ -103,7 +114,7 @@ export default function HomeHeader() {
                 text="Profile"
                 action={handleProfile}
                 value={null}
-                icon={<Feather name="user" size={hp(2.5)} color="#737373" />}
+                icon={<Feather name="user" size={hp(3.5)} color="#737373" />}
               />
               <Divider />
               <MenuItem
@@ -111,7 +122,7 @@ export default function HomeHeader() {
                 action={handleLogout}
                 value={null}
                 icon={
-                  <AntDesign name="logout" size={hp(2.5)} color="#737373" />
+                  <AntDesign name="logout" size={hp(3.5)} color="#737373" />
                 }
               />
             </MenuOptions>

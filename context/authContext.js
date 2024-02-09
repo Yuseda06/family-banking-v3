@@ -41,6 +41,7 @@ export const AuthContextProvider = ({ children }) => {
         username: data.username,
         profileUrl: data.profileUrl,
         userId: data.userId,
+        staffId: data.staffId,
       }));
     }
   };
@@ -99,7 +100,7 @@ export const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, register }}
+      value={{ user, isAuthenticated, login, logout, register, updateUserData }}
     >
       {children}
     </AuthContext.Provider>

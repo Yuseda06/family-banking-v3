@@ -1,8 +1,15 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import React, { useRef, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import ProfileHeader from "../../components/profileHeader";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, useNavigation } from "expo-router";
 import { useAuth } from "../../context/authContext";
 import { Feather, FontAwesome, Octicons } from "@expo/vector-icons";
 import Loading from "../../components/loading";
@@ -12,21 +19,61 @@ import {
 } from "react-native-responsive-screen";
 import { Image } from "expo-image";
 import { blurhash } from "../../utils/common";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
+import {
+  useProfileStore,
+  usePictureTakenStore,
+  usePictureGrabbedStore,
+} from "../../zustand/userProfileStore";
+import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 
 export default function profile() {
   const item = useLocalSearchParams();
   const router = useRouter();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [currentUsername, setCurrentUsername] = useState(user.username);
-  const [editedUsername, setEditedUsername] = useState(user.username);
-  const [profileImage, setProfileImage] = useState(user?.profileUrl);
+  const [editedUsername, setEditedUsername] = useState(user?.username);
+  const [editedStaffId, setEditedStaffId] = useState(user?.staffId);
+  const { userProfile, updateProfile } = useProfileStore();
+  const { pictureTaken, updatePictureTaken } = usePictureTakenStore();
+  const navigation = useNavigation();
+  const profileImageSource = pictureTaken.isTaken
+    ? { uri: userProfile?.profileUrl }
+    : { uri: user?.profileUrl };
 
-  const emailRef = useRef("");
-  const passwordRef = useRef("");
-  const usernameRef = useRef("");
-  const staffIdRef = useRef("");
+  console.log("pictureTaken", pictureTaken);
+
+  useEffect(() => {
+    navigation.addListener("beforeRemove", (e) => {
+      e.preventDefault();
+
+      if (pictureTaken.isTaken) {
+        Alert.alert(
+          "Oops",
+          "You have not updated your profile picture yet. Do you want to leave without updating?",
+          [
+            {
+              text: "No",
+              style: "cancel",
+            },
+            {
+              text: "Yes",
+              onPress: () => {
+                // User chose to leave without updating, navigate back
+                router.push("/home");
+              },
+            },
+          ]
+        );
+      } else {
+        // User chose to leave without updating, navigate back
+        router.push("/home");
+      }
+    });
+  }, []);
 
   const pickImage = async () => {
     try {
@@ -39,26 +86,87 @@ export default function profile() {
       });
 
       if (!result.cancelled) {
-        setProfileImage(result.assets[0].uri);
+        // Resize image
+        const resizedImage = await resizeImage(result.assets[0].uri);
+
+        // Convert resized image to base64
+        const base64Image = await convertToBase64(resizedImage.uri);
+
+        // Set profile image and update profile with the base64 data
+
+        updateProfile({
+          profileUrl: "data:image/jpeg;base64," + base64Image,
+        });
+
+        updatePictureTaken({ isTaken: true });
       }
-    } catch (E) {
-      alert("Error occurred while picking image" + E.message);
+    } catch (error) {
+      alert("Error occurred while picking image: " + error.message);
+    }
+  };
+
+  const updateUserData = async (userId) => {
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+
+    try {
+      setLoading(true);
+      if (docSnap.exists()) {
+        await updateDoc(docRef, {
+          username: editedUsername,
+          staffId: editedStaffId,
+          profileUrl: userProfile?.profileUrl,
+        });
+        setLoading(false);
+      }
+      updatePictureTaken({ isTaken: true });
+      Alert.alert("Yeay !!!", "Profile updated successfully");
+    } catch (e) {
+      Alert.alert("Error occurred while updating user data " + e.message);
+      setLoading(false);
+    }
+  };
+
+  const convertToBase64 = async (uri) => {
+    try {
+      const fileUri = uri;
+      const base64 = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      return base64;
+    } catch (error) {
+      console.error("Error converting image to base64:", error);
+      throw error;
+    }
+  };
+
+  // ... (Other imports)
+
+  const resizeImage = async (uri) => {
+    try {
+      const resizedImage = await ImageManipulator.manipulateAsync(
+        uri,
+        [{ resize: { width: 500, height: 500 } }],
+        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+      );
+
+      return resizedImage;
+    } catch (error) {
+      console.error("Error resizing image:", error);
+      throw error;
     }
   };
 
   return (
-    <View className="flex-1 bg-white px-4 ">
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      className="flex-1 bg-white px-4 "
+    >
       <StatusBar style="dark" />
-      <ProfileHeader user={user} router={router} />
-      <View className="h3 border-b border-neutral-200" />
-      <Text
-        style={{ fontSize: hp(2) }}
-        className="font-bold  text-center text-neutral-800 mt-4 mb-4"
-      >
-        Edit your profile details here
-      </Text>
+      <ProfileHeader user={user} router={router} key={user.userId} />
+      <View className="h3 border-b border-neutral-200 " />
 
-      <View className="flex-1  items-center justify-start relative ">
+      <View className="flex-1  items-center justify-start relative  pt-10">
         <View
           style={{
             borderRadius: 900,
@@ -66,20 +174,21 @@ export default function profile() {
           }}
         >
           <Image
+            key={user.userId}
             style={{
               height: hp(30),
               width: hp(30),
               borderRadius: 900, // Set the border radius here
               // This margin is not needed for centering
             }}
-            source={{ uri: profileImage }}
+            source={profileImageSource}
             placeholder={blurhash}
             transition={500}
           />
         </View>
 
         <TouchableOpacity
-          className=" absolute top-[160px] left-[230px] h-14 w-14 rounded-full items-center justify-center bg-[#f5f5f5]"
+          className=" absolute top-[190px] left-[230px] h-14 w-14 rounded-full items-center justify-center bg-[#f5f5f5]"
           onPress={pickImage}
         >
           <Feather name="camera" size={hp(3)} color="#737373" />
@@ -105,23 +214,10 @@ export default function profile() {
             style={{ height: hp(7) }}
             className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
           >
-            <Octicons name="mail" size={hp(2.4)} color="gray" />
-            <TextInput
-              onChangeText={(value) => (emailRef.current = value)}
-              style={{ fontSize: hp(2), height: hp(8) }}
-              className="flex-1 font-semibold text-neutral-700"
-              placeholder="Email address"
-              placeholderTextColor={"#555555"}
-            />
-          </View>
-
-          <View
-            style={{ height: hp(7) }}
-            className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
-          >
             <FontAwesome name="id-card-o" size={hp(2.4)} color="gray" />
             <TextInput
-              onChangeText={(value) => (staffIdRef.current = value)}
+              value={editedStaffId}
+              onChangeText={(value) => setEditedStaffId(value)}
               style={{ fontSize: hp(2), height: hp(8) }}
               className="flex-1 font-semibold text-neutral-700"
               placeholder="Staff ID"
@@ -137,14 +233,7 @@ export default function profile() {
             ) : (
               <TouchableOpacity
                 onPress={() => {
-                  // Update the current username with the edited username
-                  setCurrentUsername(editedUsername);
-
-                  // Perform the actual update logic (e.g., API call, database update)
-                  // ...
-
-                  // Optionally, reset the edited username
-                  setEditedUsername(currentUsername);
+                  updateUserData(user?.userId);
                 }}
                 style={{ height: hp(6.5) }}
                 className="bg-teal-700 rounded-xl justify-center items-center mt-6"
@@ -160,6 +249,6 @@ export default function profile() {
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
