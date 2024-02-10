@@ -5,27 +5,23 @@ const useProfileStore = create((set) => ({
   userProfile: {
     // Your initial user state
     profileUrl: "", // Add other profile properties as needed
+    username: "", // Add other profile properties as needed
+    staffId: "",
   },
   updateProfile: (newUserData) =>
     set((state) => ({ userProfile: { ...state.userProfile, ...newUserData } })),
 }));
 
-const usePictureTakenStore = create((set) => ({
-  pictureTaken: {
-    isTaken: false,
-  },
-  updatePictureTaken: (userData) =>
-    set((state) => ({ pictureTaken: { ...state.pictureTaken, ...userData } })),
+const usePictureStore = create((set) => ({
+  isPictureTaken: false,
+  takePicture: () => set({ isPictureTaken: true }),
+  resetPicture: () => set({ isPictureTaken: false }),
 }));
 
-const usePictureGrabbedStore = create((set) => ({
-  pictureGrabbed: {
-    isGrabbed: false,
-  },
-  updatePictureGrabbed: (userData) =>
-    set((state) => ({
-      pictureGrabbed: { ...state.pictureGrabbed, ...userData },
-    })),
+const useUsernameStore = create((set) => ({
+  isUsernameUpdated: false,
+  updateUsername: () => set({ isUsernameUpdated: true }),
+  resetUpdatedUsername: () => set({ isUsernameUpdated: false }),
 }));
 
-export { useProfileStore, usePictureTakenStore, usePictureGrabbedStore }; // Export the stores for other components
+export { useProfileStore, usePictureStore, useUsernameStore }; // Export the stores for other components

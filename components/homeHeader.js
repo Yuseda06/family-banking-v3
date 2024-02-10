@@ -21,8 +21,8 @@ import GreetingText from "./greeting";
 import { router } from "expo-router";
 import {
   useProfileStore,
-  usePictureTakenStore,
-  usePictureGrabbedStore,
+  usePictureStore,
+  useUsernameStore,
 } from "../zustand/userProfileStore";
 
 const ios = Platform.OS === "ios";
@@ -31,11 +31,18 @@ export default function HomeHeader() {
   const { user, logout } = useAuth();
   const { top } = useSafeAreaInsets();
   const { userProfile, updateProfile } = useProfileStore();
-  const { pictureTaken, updatePictureTaken } = usePictureTakenStore();
+  const { isPictureTaken, takePicture, resetPicture } = usePictureStore();
+  const { isUsernameUpdated } = useUsernameStore();
 
-  const profileImageSource = pictureTaken.isTaken
+  const profileImageSource = isPictureTaken
     ? { uri: userProfile?.profileUrl }
     : { uri: user?.profileUrl };
+
+  const profileUsernameSource = isUsernameUpdated
+    ? userProfile?.username
+    : user?.username;
+
+  console.log("profileUsernameSource in homeHeader", profileUsernameSource);
 
   const handleProfile = () => {
     router.push("/profile");
@@ -80,7 +87,7 @@ export default function HomeHeader() {
           <Pressable>
             <Feather name="menu" size={hp(3)} color="white" />
           </Pressable>
-          <GreetingText user={user} />
+          <GreetingText user={profileUsernameSource} />
         </View>
         <View>
           <Menu>

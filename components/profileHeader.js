@@ -9,17 +9,25 @@ import {
 } from "react-native-responsive-screen";
 import {
   useProfileStore,
-  usePictureTakenStore,
-  usePictureGrabbedStore,
+  usePictureStore,
+  useUsernameStore,
 } from "../zustand/userProfileStore";
 
 export default function ProfileHeader({ user, router }) {
   const { userProfile } = useProfileStore();
-  const { pictureTaken, updatePictureTaken } = usePictureTakenStore();
+  const { isPictureTaken, takePicture, resetPicture } = usePictureStore();
+  const { isUsernameUpdated, updateUsername, resetUpdatedUsername } =
+    useUsernameStore();
 
-  const profileImageSource = pictureTaken.isTaken
+  const profileImageSource = isPictureTaken
     ? { uri: userProfile?.profileUrl }
     : { uri: user?.profileUrl };
+
+  const profileUsernameSource = isUsernameUpdated
+    ? userProfile?.username
+    : user?.username;
+
+  console.log("profileUsernameSource", profileUsernameSource);
 
   return (
     <Stack.Screen
@@ -38,7 +46,10 @@ export default function ProfileHeader({ user, router }) {
               />
 
               <Text style={{ fontSize: hp(2.0) }}>
-                Edit Profile - {user.username}
+                Edit Profile -{" "}
+                {profileUsernameSource == ""
+                  ? user?.username
+                  : profileUsernameSource}
               </Text>
             </View>
           </View>

@@ -23,8 +23,8 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import {
   useProfileStore,
-  usePictureTakenStore,
-  usePictureGrabbedStore,
+  usePictureStore,
+  useUsernameStore,
 } from "../../zustand/userProfileStore";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -38,44 +38,57 @@ export default function profile() {
   const [editedUsername, setEditedUsername] = useState(user?.username);
   const [editedStaffId, setEditedStaffId] = useState(user?.staffId);
   const { userProfile, updateProfile } = useProfileStore();
-  const { pictureTaken, updatePictureTaken } = usePictureTakenStore();
+
+  const { isPictureTaken, takePicture, resetPicture } = usePictureStore();
+  const { isUsernameUpdated, updateUsername, resetUpdatedUsername } =
+    useUsernameStore();
+
+  console.log("editedUsername", editedUsername);
+  console.log("user?.username", user?.username);
+  console.log("isUsernameUpdated", isUsernameUpdated);
+
   const navigation = useNavigation();
-  const profileImageSource = pictureTaken.isTaken
+  const profileImageSource = isPictureTaken
     ? { uri: userProfile?.profileUrl }
     : { uri: user?.profileUrl };
 
-  console.log("pictureTaken", pictureTaken);
+  const profileUsernameSource = isUsernameUpdated
+    ? userProfile?.username
+    : user?.username;
 
   useEffect(() => {
-    navigation.addListener("beforeRemove", (e) => {
-      e.preventDefault();
+    setEditedUsername(profileUsernameSource);
+  }, [isUsernameUpdated]);
 
-      if (pictureTaken.isTaken) {
-        Alert.alert(
-          "Oops",
-          "You have not updated your profile picture yet. Do you want to leave without updating?",
-          [
-            {
-              text: "No",
-              style: "cancel",
-            },
-            {
-              text: "Yes",
-              onPress: () => {
-                // User chose to leave without updating, navigate back
-                router.push("/home");
-              },
-            },
-          ]
-        );
-      } else {
-        // User chose to leave without updating, navigate back
-        router.push("/home");
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   navigation.addListener("beforeRemove", (e) => {
+  //     e.preventDefault();
+
+  //     if (isPictureTaken) {
+  //       Alert.alert(
+  //         "Oops",
+  //         "You have not updated your profile picture yet. Do you want to leave without updating?",
+  //         [
+  //           {
+  //             text: "No",
+  //             style: "cancel",
+  //           },
+  //           {
+  //             text: "Yes",
+  //             onPress: () => {
+  //               // User chose to leave without updating, navigate back
+  //               router.push("/home");
+  //             },
+  //           },
+  //         ]
+  //       );
+  //     }
+  //   });
+  // }, [isPictureTaken]);
 
   const pickImage = async () => {
+    resetPicture();
+
     try {
       await ImagePicker.requestCameraPermissionsAsync();
       let result = await ImagePicker.launchCameraAsync({
@@ -96,9 +109,10 @@ export default function profile() {
 
         updateProfile({
           profileUrl: "data:image/jpeg;base64," + base64Image,
+          username: editedUsername,
+          staffId: editedStaffId,
         });
-
-        updatePictureTaken({ isTaken: true });
+        takePicture();
       }
     } catch (error) {
       alert("Error occurred while picking image: " + error.message);
@@ -108,18 +122,28 @@ export default function profile() {
   const updateUserData = async (userId) => {
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
+    updateProfile({
+      username: editedUsername,
+      staffId: editedStaffId,
+    });
 
     try {
       setLoading(true);
+      let updatedProfileUrl = isPictureTaken
+        ? userProfile?.profileUrl
+        : user?.profileUrl;
+
       if (docSnap.exists()) {
         await updateDoc(docRef, {
           username: editedUsername,
           staffId: editedStaffId,
-          profileUrl: userProfile?.profileUrl,
+          profileUrl: updatedProfileUrl || null, // Use null if updatedProfileUrl is empty
         });
         setLoading(false);
       }
-      updatePictureTaken({ isTaken: true });
+
+      updateUsername();
+
       Alert.alert("Yeay !!!", "Profile updated successfully");
     } catch (e) {
       Alert.alert("Error occurred while updating user data " + e.message);
@@ -174,7 +198,6 @@ export default function profile() {
           }}
         >
           <Image
-            key={user.userId}
             style={{
               height: hp(30),
               width: hp(30),
@@ -207,6 +230,7 @@ export default function profile() {
               className="flex-1 font-semibold text-neutral-700 "
               placeholder="Username"
               placeholderTextColor={"#555555"}
+              onFocus={() => {}}
             />
           </View>
 
