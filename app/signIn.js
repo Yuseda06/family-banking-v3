@@ -118,15 +118,20 @@ export default function SignIn() {
               ) : (
                 <TouchableOpacity
                   onPress={handleLogin}
-                  style={{ height: hp(7.5) }}
-                  className="bg-teal-700 rounded-xl justify-center items-center mt-6"
+                  style={{ height: hp(9) }}
+                  className=" justify-center"
                 >
-                  <Text
-                    style={{ fontSize: hp(2.7) }}
-                    className="text-white font-bold "
+                  <View
+                    style={{ height: hp(7) }}
+                    className="bg-teal-700 rounded-xl justify-center items-center"
                   >
-                    Sign In
-                  </Text>
+                    <Text
+                      style={{ fontSize: hp(2.7) }}
+                      className="text-white font-bold "
+                    >
+                      Sign In
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               )}
             </View>

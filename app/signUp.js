@@ -37,7 +37,7 @@ export default function SignUp() {
       !usernameRef.current ||
       !staffIdRef.current
     ) {
-      Alert.alert("reg!!!", "Please fill in all the fields");
+      Alert.alert("Oops !!!", "Please fill in all the fields");
       return;
     }
 
@@ -168,15 +168,20 @@ export default function SignUp() {
                   ) : (
                     <TouchableOpacity
                       onPress={handleRegister}
-                      style={{ height: hp(6.5) }}
-                      className="bg-teal-700 rounded-xl justify-center items-center mt-6"
+                      style={{ height: hp(9) }}
+                      className=" justify-center"
                     >
-                      <Text
-                        style={{ fontSize: hp(2.7) }}
-                        className="text-white font-bold "
+                      <View
+                        style={{ height: hp(7) }}
+                        className="bg-teal-700 rounded-xl justify-center items-center"
                       >
-                        Sign Up
-                      </Text>
+                        <Text
+                          style={{ fontSize: hp(2.7) }}
+                          className="text-white font-bold "
+                        >
+                          Sign Up
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                   )}
                 </View>
